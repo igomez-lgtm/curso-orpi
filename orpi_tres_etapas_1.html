@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ORPI: las tres etapas</title>
+<style>
+:root{
+  --rc-navy:#040045; --rc-blue:#0064e0; --rc-sky:#358dff;
+  --rc-slate:#3e4867; --rc-ice:#e1eaf9; --rc-cyan:#00b5d4;
+  --bg:#ffffff; --surface:var(--rc-ice); --ink:var(--rc-navy); --ink-2:var(--rc-slate);
+  --accent:var(--rc-blue); --accent-2:var(--rc-sky); --accent-3:var(--rc-cyan);
+  --btn:var(--rc-blue); --card:#ffffff;
+  --line:color-mix(in srgb,var(--rc-slate) 25%,#fff);
+  --font-body:"Open Sans","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --font-head:"Codec Pro","Open Sans","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:var(--rc-navy); --surface:color-mix(in srgb,var(--rc-navy) 78%,var(--rc-slate));
+    --ink:var(--rc-ice); --ink-2:#b9c4dc; --accent:var(--rc-sky); --card:color-mix(in srgb,var(--rc-navy) 88%,var(--rc-slate));
+    --line:color-mix(in srgb,var(--rc-ice) 22%,var(--rc-navy));
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;line-height:1.55;overflow-wrap:anywhere;word-break:normal;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:clamp(1rem,.4vw + .92rem,1.0625rem)}
+img,svg,video,canvas{max-width:100%;height:auto;display:block}
+.flex>*,.grid>*{min-width:0}
+h1,h2,h3{font-family:var(--font-head);line-height:1.2;margin:0 0 .5em;font-weight:800}
+h1{font-size:clamp(1.5rem,2.5vw + 1rem,2.25rem)}
+h2{font-size:clamp(1.2rem,1.5vw + 1rem,1.6rem)}
+h3{font-size:1.15rem}
+p{margin:0 0 .75em}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--rc-sky);outline-offset:2px}
+
+header{background:var(--rc-navy);color:var(--rc-ice);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+.head-in{padding-block:clamp(16px,3vw,28px)}
+.logo{height:40px;width:auto;max-width:100%;margin-bottom:14px}
+header h1{color:var(--rc-ice);margin-bottom:.3em}
+header p{color:#c9d5ee;margin:0;max-width:60ch}
+
+main{padding-block:clamp(18px,3vw,32px)}
+section{margin-block:clamp(20px,3vw,32px)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(12px,2vw,20px);overflow:hidden;overflow-wrap:anywhere;hyphens:auto}
+.lead{font-size:1.08em}
+.simple{border-left:4px solid var(--accent);background:var(--card);border-radius:10px;padding:12px 14px;margin-top:12px}
+.simple strong{display:block;color:var(--accent);font-size:.9em;margin-bottom:2px}
+.simple b{font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:10px 0 0;padding:0}
+.chips li{background:var(--card);border:1px solid var(--accent);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:.95rem;font-weight:600}
+details{margin-top:12px}
+summary{cursor:pointer;font-weight:700;color:var(--accent);padding:6px 0}
+details p{margin:.5em 0 0}
+
+/* Controles */
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-block:14px}
+button{font:inherit;font-weight:600;cursor:pointer;border-radius:10px;padding:9px 16px;min-height:44px;border:2px solid var(--rc-blue);background:transparent;color:var(--ink)}
+button.primary{background:var(--btn);color:#fff}
+button:hover{border-color:var(--rc-sky)}
+button.primary:hover{background:color-mix(in srgb,var(--rc-blue) 85%,var(--rc-navy))}
+button:disabled{opacity:.5;cursor:default}
+.hint{color:var(--ink-2);font-size:.95rem;margin:0}
+
+/* Pista de flujo */
+.track{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-block:8px 18px}
+.track-line{position:absolute;z-index:0;background:var(--line);border-radius:4px;pointer-events:none}
+.track-fill{position:absolute;z-index:0;background:var(--rc-sky);border-radius:4px;pointer-events:none}
+.dot{position:absolute;z-index:2;width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:50%;background:transparent;border:4px solid var(--rc-cyan);box-shadow:0 0 0 2px var(--rc-navy);pointer-events:none;left:0;top:0}
+.tab{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 8px;min-height:64px;text-align:center;color:var(--ink);font-weight:700}
+.tab .n{width:30px;height:30px;border-radius:50%;background:var(--rc-slate);color:#fff;display:grid;place-items:center;font-family:var(--font-head)}
+.tab[aria-selected="true"]{border-color:var(--rc-blue);background:var(--surface)}
+.tab[aria-selected="true"] .n{background:var(--rc-blue)}
+.tab.done .n::after{content:""}
+.tab .lbl{overflow-wrap:anywhere}
+
+/* Tarjetas de etapa */
+.stages{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.stage{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:clamp(12px,2vw,18px);display:flex;flex-direction:column;gap:10px;opacity:.85;transition:opacity .4s,border-color .4s,transform .4s}
+.stage.active{opacity:1;border-color:var(--rc-blue);transform:translateY(-3px);box-shadow:0 6px 18px color-mix(in srgb,var(--rc-navy) 18%,transparent)}
+.stage .tag{display:inline-block;align-self:flex-start;background:var(--rc-blue);color:#fff;border-radius:999px;padding:2px 12px;font-size:.85rem;font-weight:700}
+.stage h3{margin:0}
+.key{font-weight:600;margin:0}
+.stage ul{margin:0;padding-left:1.1em}
+.stage li{margin-bottom:.3em}
+.art{background:var(--surface);border-radius:10px;padding:6px}
+.art svg{width:100%;height:auto;max-height:150px}
+.sv-node{fill:var(--card);stroke:var(--rc-blue);stroke-width:2}
+.sv-line{stroke:var(--rc-sky);stroke-width:2;fill:none}
+.sv-fill{fill:var(--rc-blue)}
+.sv-cyan{fill:var(--rc-cyan)}
+.sv-money{fill:var(--rc-cyan);stroke:var(--rc-navy);stroke-width:1.5}
+
+.controls-band{margin-top:clamp(20px,3vw,32px)}
+.band-list{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:10px 0 0;padding:0}
+.band-list li{background:var(--card);border:1px solid var(--accent);border-radius:10px;padding:6px 12px;font-weight:600}
+
+footer{border-top:1px solid var(--line);color:var(--ink-2);font-size:.9rem;padding-block:16px}
+
+/* Animaciones (sólo etapa activa) */
+@keyframes deposit{0%{transform:translateX(0);opacity:0}15%{opacity:1}75%{transform:translateX(62px);opacity:1}100%{transform:translateX(70px);opacity:0}}
+@keyframes dash{to{stroke-dashoffset:-16}}
+@keyframes grow{from{transform:scaleY(.15)}to{transform:scaleY(1)}}
+@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+.playing .stage.active .bill{animation:deposit 2.2s ease-in infinite}
+.playing .stage.active .bill:nth-child(2){animation-delay:.5s}
+.playing .stage.active .bill:nth-child(3){animation-delay:1s}
+.playing .stage.active .flow{stroke-dasharray:4 4;animation:dash .8s linear infinite}
+.bar{transform-box:fill-box;transform-origin:bottom}
+.playing .stage.active .bar{animation:grow 1.2s ease-out both}
+.playing .stage.active .bar:nth-of-type(2){animation-delay:.25s}
+.playing .stage.active .bar:nth-of-type(3){animation-delay:.5s}
+.ret{transform-box:fill-box;transform-origin:center}
+.playing .stage.active .ret{animation:pop .8s .9s ease-out both}
+@media (max-width:640px){
+  .track{grid-template-columns:1fr;gap:10px}
+  .tab{flex-direction:row;justify-content:flex-start;text-align:left;padding:10px 14px}
+  .head-in{padding-block:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap head-in">
+    <img class="logo" alt="Regcheq" src="data:image/png;base64,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">
+    <h1>Así se lava el dinero: las tres etapas de las ORPI</h1>
+    <p>Colocación, Estratificación e Integración. Sigue el recorrido del dinero ilícito paso a paso.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section aria-labelledby="que-es">
+    <div class="box">
+      <h2 id="que-es">¿Qué son las ORPI?</h2>
+      <p class="lead">Las <b>Operaciones con Recursos de Procedencia Ilícita (ORPI)</b> se conocen coloquialmente como <b>lavado de dinero</b>.</p>
+      <p>Son actos con recursos que la persona <b>sabe o debe saber</b> que vienen de una actividad ilícita. Su propósito es darles una <b>apariencia de licitud</b>.</p>
+      <p>La persona que los realiza:</p>
+      <ul class="chips" aria-label="Actos que comprenden las ORPI">
+        <li>adquiere</li><li>resguarda</li><li>administra</li><li>transporta</li><li>convierte</li><li>transfiere</li>
+      </ul>
+      <div class="simple"><strong>En palabras simples</strong>Es hacer que dinero de origen ilegal parezca dinero de origen legal.</div>
+      <details>
+        <summary>Ver actividades ilícitas mencionadas</summary>
+        <p>Tráfico de drogas, robo de hidrocarburos, corrupción, fraude, trata de personas, extorsión, evasión fiscal, entre otras.</p>
+      </details>
+    </div>
+  </section>
+
+  <section aria-labelledby="diagrama" id="app">
+    <h2 id="diagrama">El recorrido del dinero en tres etapas</h2>
+    <p class="hint">El proceso se desarrolla clásicamente en tres etapas. Reprodúcelo o elige una etapa para verla con detalle.</p>
+
+    <div class="controls" role="group" aria-label="Controles de la animación">
+      <button type="button" class="primary" id="btnPlay" aria-pressed="false">Pausar</button>
+      <button type="button" id="btnPrev">Etapa anterior</button>
+      <button type="button" id="btnNext">Etapa siguiente</button>
+      <button type="button" id="btnRestart">Reiniciar</button>
+    </div>
+
+    <div class="track" id="track" role="tablist" aria-label="Etapas del proceso">
+      <span class="track-line" id="tLine" aria-hidden="true"></span>
+      <span class="track-fill" id="tFill" aria-hidden="true"></span>
+      <button type="button" class="tab" role="tab" id="tab0" aria-selected="true" aria-controls="st0"><span class="n">1</span><span class="lbl">Colocación</span></button>
+      <button type="button" class="tab" role="tab" id="tab1" aria-selected="false" aria-controls="st1"><span class="n">2</span><span class="lbl">Estratificación</span></button>
+      <button type="button" class="tab" role="tab" id="tab2" aria-selected="false" aria-controls="st2"><span class="n">3</span><span class="lbl">Integración</span></button>
+      <span class="dot" id="dot" aria-hidden="true"></span>
+    </div>
+
+    <div class="stages" id="stages" aria-live="polite">
+      <article class="stage active" id="st0" role="tabpanel" aria-labelledby="tab0">
+        <span class="tag">Etapa 1</span>
+        <h3>Colocación</h3>
+        <div class="art" aria-hidden="true">
+          <svg viewBox="0 0 160 100" focusable="false">
+            <polygon class="sv-fill" points="86,34 118,14 150,34"/>
+            <rect class="sv-node" x="92" y="34" width="52" height="46" rx="4"/>
+            <rect class="sv-fill" x="110" y="52" width="16" height="28" rx="2"/>
+            <rect class="sv-line" x="8" y="82" width="144" height="0"/>
+            <g>
+              <rect class="bill sv-money" x="14" y="26" width="22" height="12" rx="2" opacity="0"/>
+              <rect class="bill sv-money" x="14" y="44" width="22" height="12" rx="2" opacity="0"/>
+              <rect class="bill sv-money" x="14" y="62" width="22" height="12" rx="2" opacity="0"/>
+            </g>
+          </svg>
+        </div>
+        <p class="key">El dinero ilícito entra al sistema financiero.</p>
+        <ul>
+          <li>Suele ser dinero en efectivo.</li>
+          <li>Ejemplo: depósitos fraccionados.</li>
+          <li>Ejemplo: compra de instrumentos financieros.</li>
+        </ul>
+      </article>
+
+      <article class="stage" id="st1" role="tabpanel" aria-labelledby="tab1">
+        <span class="tag">Etapa 2</span>
+        <h3>Estratificación</h3>
+        <div class="art" aria-hidden="true">
+          <svg viewBox="0 0 160 100" focusable="false">
+            <path class="sv-line flow" d="M20 50 L60 20 L100 20 L140 50"/>
+            <path class="sv-line flow" d="M20 50 L60 50 L100 50 L140 50"/>
+            <path class="sv-line flow" d="M20 50 L60 80 L100 80 L140 50"/>
+            <path class="sv-line flow" d="M60 20 L100 50 M60 80 L100 50 M60 50 L100 20 M60 50 L100 80"/>
+            <circle class="sv-node" cx="20" cy="50" r="10"/>
+            <circle class="sv-node" cx="60" cy="20" r="8"/><circle class="sv-node" cx="60" cy="50" r="8"/><circle class="sv-node" cx="60" cy="80" r="8"/>
+            <circle class="sv-node" cx="100" cy="20" r="8"/><circle class="sv-node" cx="100" cy="50" r="8"/><circle class="sv-node" cx="100" cy="80" r="8"/>
+            <circle class="sv-cyan" cx="140" cy="50" r="10"/>
+          </svg>
+        </div>
+        <p class="key">Muchas operaciones rompen el rastro entre el origen y el destino final de los fondos.</p>
+        <ul>
+          <li>Transferencias.</li>
+          <li>Compra-venta de activos.</li>
+          <li>Movimientos entre jurisdicciones.</li>
+        </ul>
+      </article>
+
+      <article class="stage" id="st2" role="tabpanel" aria-labelledby="tab2">
+        <span class="tag">Etapa 3</span>
+        <h3>Integración</h3>
+        <div class="art" aria-hidden="true">
+          <svg viewBox="0 0 160 100" focusable="false">
+            <circle class="sv-cyan" cx="24" cy="50" r="12"/>
+            <path class="sv-line" d="M40 50 H74"/>
+            <polygon class="sv-fill" points="68,44 80,50 68,56"/>
+            <rect class="bar sv-fill" x="92" y="52" width="14" height="28" rx="2"/>
+            <rect class="bar sv-fill" x="112" y="36" width="14" height="44" rx="2"/>
+            <rect class="bar sv-fill" x="132" y="20" width="14" height="60" rx="2"/>
+            <circle class="ret sv-cyan" cx="139" cy="12" r="6"/>
+          </svg>
+        </div>
+        <p class="key">El recurso ya “limpio” regresa a la economía formal.</p>
+        <ul>
+          <li>Inversiones.</li>
+          <li>Bienes.</li>
+          <li>Negocios aparentemente legítimos.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="controls-band" aria-labelledby="controles">
+    <div class="box">
+      <h2 id="controles">Cada etapa ofrece puntos de detección distintos</h2>
+      <p>Por eso los controles de la entidad están diseñados para intervenir en cualquiera de las tres etapas.</p>
+      <ul class="band-list" aria-label="Controles de la entidad">
+        <li>Identificación del cliente</li>
+        <li>Monitoreo transaccional</li>
+        <li>Reportes</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Contenido basado en el material del curso. Regcheq.</div>
+</footer>
+
+<script>
+(function(){
+  var DUR = 15000;                 // duración total (ms) de las tres etapas
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var app = document.getElementById('app');
+  var tabs = [0,1,2].map(function(i){return document.getElementById('tab'+i);});
+  var cards = [0,1,2].map(function(i){return document.getElementById('st'+i);});
+  var dot = document.getElementById('dot'), track = document.getElementById('track');
+  var line = document.getElementById('tLine'), fill = document.getElementById('tFill');
+  var btnPlay = document.getElementById('btnPlay');
+  var p = 0, playing = false, last = 0, active = -1;
+
+  function centers(){
+    var tr = track.getBoundingClientRect();
+    return tabs.map(function(t){
+      var n = t.querySelector('.n').getBoundingClientRect();
+      return {x: n.left + n.width/2 - tr.left, y: n.top + n.height/2 - tr.top};
+    });
+  }
+  function place(){
+    var c = centers(), vertical = c[0].x === c[1].x || Math.abs(c[0].x - c[1].x) < 4;
+    var seg = Math.min(2, p*3*0 + p*2);       // 0..2 recorrido entre nodos
+    var i = Math.min(1, Math.floor(seg)), f = seg - i;
+    var x = c[i].x + (c[i+1].x - c[i].x)*f, y = c[i].y + (c[i+1].y - c[i].y)*f;
+    dot.style.left = x + 'px'; dot.style.top = y + 'px';
+    if (vertical){
+      line.style.cssText = 'left:'+(c[0].x-2)+'px;top:'+c[0].y+'px;width:4px;height:'+(c[2].y-c[0].y)+'px';
+      fill.style.cssText = 'left:'+(c[0].x-2)+'px;top:'+c[0].y+'px;width:4px;height:'+(y-c[0].y)+'px';
+    } else {
+      line.style.cssText = 'top:'+(c[0].y-2)+'px;left:'+c[0].x+'px;height:4px;width:'+(c[2].x-c[0].x)+'px';
+      fill.style.cssText = 'top:'+(c[0].y-2)+'px;left:'+c[0].x+'px;height:4px;width:'+(x-c[0].x)+'px';
+    }
+  }
+  function setActive(i){
+    if (i === active) return; active = i;
+    tabs.forEach(function(t,k){t.setAttribute('aria-selected', k===i ? 'true':'false'); t.tabIndex = k===i?0:-1;});
+    cards.forEach(function(c,k){c.classList.toggle('active', k===i);});
+  }
+  function render(){
+    setActive(Math.min(2, Math.floor(p*3)));
+    place();
+    document.getElementById('btnPrev').disabled = active === 0;
+    document.getElementById('btnNext').disabled = active === 2;
+  }
+  function setPlaying(v){
+    playing = v; app.classList.toggle('playing', true);
+    btnPlay.textContent = v ? 'Pausar' : (p >= 1 ? 'Ver de nuevo' : 'Reproducir');
+    btnPlay.setAttribute('aria-pressed', v ? 'true':'false');
+    if (v){ last = performance.now(); requestAnimationFrame(tick); }
+  }
+  function tick(t){
+    if (!playing) return;
+    p = Math.min(1, p + (t - last)/DUR); last = t;
+    render();
+    if (p >= 1){ setPlaying(false); return; }
+    requestAnimationFrame(tick);
+  }
+  function goStage(i){ p = Math.min(0.999, (i + 0.5)/3); p = i === 0 ? 0 : i/3 + 0.0001; render(); if (!playing) setPlaying(false); }
+
+  btnPlay.addEventListener('click', function(){
+    if (playing) { setPlaying(false); return; }
+    if (p >= 1) p = 0;
+    setPlaying(true);
+  });
+  document.getElementById('btnRestart').addEventListener('click', function(){ p = 0; render(); setPlaying(!reduce); });
+  document.getElementById('btnPrev').addEventListener('click', function(){ setPlaying(false); goStage(Math.max(0, active-1)); });
+  document.getElementById('btnNext').addEventListener('click', function(){ setPlaying(false); goStage(Math.min(2, active+1)); });
+  tabs.forEach(function(t,i){
+    t.addEventListener('click', function(){ setPlaying(false); goStage(i); });
+    t.addEventListener('keydown', function(e){
+      var k = e.key, n = null;
+      if (k==='ArrowRight'||k==='ArrowDown') n = (i+1)%3;
+      if (k==='ArrowLeft'||k==='ArrowUp') n = (i+2)%3;
+      if (n!==null){ e.preventDefault(); tabs[n].focus(); setPlaying(false); goStage(n); }
+    });
+  });
+  window.addEventListener('resize', place);
+  if (window.ResizeObserver) new ResizeObserver(place).observe(track);
+  render();
+  setPlaying(!reduce);
+  place();
+})();
+</script>
+</body>
+</html>
