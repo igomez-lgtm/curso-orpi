@@ -77,12 +77,35 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
 .pz.on{opacity:1}
 .prop{position:absolute;height:auto;filter:drop-shadow(0 4px 6px rgba(4,0,69,.25))}
 .stamp{display:inline-block;font-weight:700;letter-spacing:.04em;text-transform:uppercase;transform:rotate(-4deg);background:color-mix(in srgb,#fff 82%,transparent);color:#b42318;border:4px solid #b42318;border-radius:8px;padding:2px 10px}
-.stamp.big{position:absolute;left:46%;top:83%;translate:-50% 0;font-size:clamp(.9rem,2.6vw,2rem);white-space:nowrap}
-.dlg{display:grid;align-content:start;gap:6px;padding:12px 16px 14px;min-height:118px;background:var(--card)}
-.dlg .who{justify-self:start;font-size:.78rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--c,var(--rc-slate));border-radius:6px;padding:1px 9px}
+.stamp.big{position:absolute;left:47%;top:70%;translate:-50% 0;font-size:clamp(.9rem,2.6vw,2rem);white-space:nowrap}
+.dlgw{position:relative;z-index:3;margin:-3.5% 14px 14px}
+.dlg{--c:var(--rc-slate);--tx:50%;position:relative;display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;align-items:start;background:var(--card);border:2.5px solid var(--c);border-radius:18px;padding:12px 14px;box-shadow:0 10px 26px rgba(4,0,69,.22);min-height:92px;transition:border-color .3s}
+.dlg::before,.dlg::after{content:"";position:absolute;left:var(--tx);translate:-50% 0;transition:left .5s cubic-bezier(.3,.7,.2,1)}
+.dlg::before{top:-16px;width:28px;height:16px;background:var(--c);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.dlg::after{top:-10.5px;width:19px;height:12px;background:var(--card);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.dlg.piensa{border-style:dashed}
+.dlg.piensa::before{top:-16px;width:13px;height:13px;border-radius:50%;clip-path:none;background:var(--card);border:2.5px solid var(--c)}
+.dlg.piensa::after{top:-30px;width:8px;height:8px;border-radius:50%;clip-path:none;background:var(--card);border:2px solid var(--c);translate:-20% 0}
+.dlg.vacio{visibility:hidden}
+.av{width:48px;height:48px;border-radius:50%;overflow:hidden;background:color-mix(in srgb,var(--c) 18%,#fff);border:2px solid var(--c)}
+.av img{display:block;width:280%;max-width:none;margin:2% 0 0 -62%}
+.db{display:grid;gap:4px;min-width:0}
+.dlg .who{justify-self:start;font-size:.78rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--c);border-radius:6px;padding:1px 9px}
 .dlg .txt{font-size:clamp(.95rem,.4vw + .88rem,1.08rem);line-height:1.55;min-width:0}
 .dlg.piensa .txt{color:var(--ink-2)}
 .dlg.piensa .who::after{content:" · piensa";text-transform:none;letter-spacing:0}
+.cue{--c:var(--rc-slate);position:absolute;z-index:4;left:0;top:0;display:flex;gap:4px;align-items:center;background:#fff;border:2px solid var(--c);border-radius:14px;padding:6px 8px;translate:-50% -100%;opacity:0;transition:opacity .25s,left .5s cubic-bezier(.3,.7,.2,1),top .5s;pointer-events:none}
+.cue::after{content:"";position:absolute;left:50%;bottom:-8px;translate:-50% 0;width:12px;height:8px;background:var(--c);clip-path:polygon(0 0,100% 0,50% 100%)}
+.cue.on{opacity:1}
+.cue i{width:6px;height:6px;border-radius:50%;background:var(--c)}
+.cue.hab i{animation:dots 1s ease-in-out infinite}
+.cue i:nth-child(2){animation-delay:.15s}.cue i:nth-child(3){animation-delay:.3s}
+.cue.piensa{border-style:dashed}.cue.piensa i{animation:none;opacity:.6}
+@keyframes dots{0%,60%,100%{transform:none}30%{transform:translateY(-4px)}}
+.actor .fig{transition:filter .3s}
+.actor.quiet .fig{filter:saturate(.7) brightness(.9)}
+@media (max-width:640px){.dlgw{margin:-4% 8px 10px}.dlg{grid-template-columns:40px minmax(0,1fr);gap:10px;padding:10px 12px}.av{width:40px;height:40px}}
+@media (prefers-reduced-motion:reduce){.cue i{animation:none}}
 .w{opacity:0;transition:opacity .12s}.w.v{opacity:1}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{font-size:.85rem;font-weight:500;border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 12%,var(--card));border-radius:999px;padding:2px 10px}
@@ -115,7 +138,7 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
 <main class="wrap">
 <section class="card" aria-labelledby="ho">
   <h2 id="ho">«No rebasa ningún supuesto de la ley…»</h2>
-  <p class="lead">En la oficina de cumplimiento, un empleado consulta al REC. <b>Haz clic en cualquier parte de la página para avanzar el diálogo.</b></p>
+  <p class="lead">En la oficina de cumplimiento, un empleado consulta al REC. <b>Haz clic en cualquier parte de la página para avanzar el diálogo;</b> lo que dice cada personaje aparece en el globo que lo señala.</p>
   <div class="stage vn" id="sco">
     <div class="scene" id="oS" role="img" aria-label="Escena ilustrada: «No rebasa ningún supuesto de la ley…»">
       <div class="world" id="oW">
@@ -124,8 +147,9 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
         <img class="lay fore" data-a="oficina_fore" alt="" draggable="false">
         <img class="prop" data-a="Man" alt="" draggable="false" id="oMan" style="left:47%;top:30%;width:7%">
       </div>
+      <span class="cue" id="oQ" aria-hidden="true"><i></i><i></i><i></i></span>
     </div>
-    <div class="dlg" id="oD" aria-live="polite"><span class="who"></span><div class="txt"></div></div>
+    <div class="dlgw"><div class="dlg" id="oD" aria-live="polite"><span class="av"><img alt="" draggable="false"></span><div class="db"><span class="who"></span><div class="txt"></div></div></div></div>
     <div class="beats" aria-hidden="true"><i class="beat" id="ob0"></i><i class="beat" id="ob1"></i><i class="beat" id="ob2"></i><i class="beat" id="ob3"></i><i class="beat" id="ob4"></i></div>
   </div>
   <div class="nav"><button type="button" class="btn" id="oR">Reiniciar</button><button type="button" class="btn" id="oT">Ver todo</button></div><p class="ind" id="oI" aria-live="polite"></p>
@@ -133,7 +157,7 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
 </section>
 <section class="card" aria-labelledby="hc">
   <h2 id="hc">Casino</h2>
-  <p class="lead"><span class="ej">Ejemplo ilustrativo</span> Un cliente llega a la caja. <b>Haz clic en cualquier parte de la página para avanzar el diálogo.</b></p>
+  <p class="lead"><span class="ej">Ejemplo ilustrativo</span> Un cliente llega a la caja. <b>Haz clic en cualquier parte de la página para avanzar el diálogo;</b> lo que dice cada personaje aparece en el globo que lo señala.</p>
   <div class="stage vn" id="scc">
     <div class="scene" id="cS" role="img" aria-label="Escena ilustrada: Casino">
       <div class="world" id="cW">
@@ -142,8 +166,9 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
         <img class="lay fore" data-a="casino_fore" alt="" draggable="false">
         <img class="prop" data-a="Doc" alt="" draggable="false" id="cDoc" style="left:58%;top:42%;width:6%"><div class="stamp big" id="cStamp">Aviso urgente · 24 h</div>
       </div>
+      <span class="cue" id="cQ" aria-hidden="true"><i></i><i></i><i></i></span>
     </div>
-    <div class="dlg" id="cD" aria-live="polite"><span class="who"></span><div class="txt"></div></div>
+    <div class="dlgw"><div class="dlg" id="cD" aria-live="polite"><span class="av"><img alt="" draggable="false"></span><div class="db"><span class="who"></span><div class="txt"></div></div></div></div>
     <div class="beats" aria-hidden="true"><i class="beat" id="cb0"></i><i class="beat" id="cb1"></i><i class="beat" id="cb2"></i><i class="beat" id="cb3"></i><i class="beat" id="cb4"></i></div>
   </div>
   <div class="nav"><button type="button" class="btn" id="cR">Reiniciar</button><button type="button" class="btn" id="cT">Ver todo</button></div><p class="ind" id="cI" aria-live="polite"></p>
@@ -151,7 +176,7 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
 </section>
 <section class="card" aria-labelledby="hi">
   <h2 id="hi">Inmobiliaria</h2>
-  <p class="lead"><span class="ej">Ejemplo ilustrativo</span> Un comprador visita la oficina de ventas. <b>Haz clic en cualquier parte de la página para avanzar el diálogo.</b></p>
+  <p class="lead"><span class="ej">Ejemplo ilustrativo</span> Un comprador visita la oficina de ventas. <b>Haz clic en cualquier parte de la página para avanzar el diálogo;</b> lo que dice cada personaje aparece en el globo que lo señala.</p>
   <div class="stage vn" id="sci">
     <div class="scene" id="iS" role="img" aria-label="Escena ilustrada: Inmobiliaria">
       <div class="world" id="iW">
@@ -160,8 +185,9 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
         <img class="lay fore" data-a="inmob_fore" alt="" draggable="false">
         <img class="prop" data-a="Casa" alt="" draggable="false" id="iCasa" style="left:40.5%;top:42%;width:8%"><img class="prop" data-a="Doc" alt="" draggable="false" id="iDoc" style="left:58%;top:42%;width:6%"><div class="stamp big" id="iStamp">Aviso urgente · 24 h</div>
       </div>
+      <span class="cue" id="iQ" aria-hidden="true"><i></i><i></i><i></i></span>
     </div>
-    <div class="dlg" id="iD" aria-live="polite"><span class="who"></span><div class="txt"></div></div>
+    <div class="dlgw"><div class="dlg" id="iD" aria-live="polite"><span class="av"><img alt="" draggable="false"></span><div class="db"><span class="who"></span><div class="txt"></div></div></div></div>
     <div class="beats" aria-hidden="true"><i class="beat" id="ib0"></i><i class="beat" id="ib1"></i><i class="beat" id="ib2"></i><i class="beat" id="ib3"></i><i class="beat" id="ib4"></i></div>
   </div>
   <div class="nav"><button type="button" class="btn" id="iR">Reiniciar</button><button type="button" class="btn" id="iT">Ver todo</button></div><p class="ind" id="iI" aria-live="polite"></p>
@@ -169,7 +195,7 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
 </section>
 <section class="card" aria-labelledby="ha">
   <h2 id="ha">Activos virtuales</h2>
-  <p class="lead"><span class="ej">Ejemplo ilustrativo</span> Un analista lleva una alerta al REC. <b>Haz clic en cualquier parte de la página para avanzar el diálogo.</b></p>
+  <p class="lead"><span class="ej">Ejemplo ilustrativo</span> Un analista lleva una alerta al REC. <b>Haz clic en cualquier parte de la página para avanzar el diálogo;</b> lo que dice cada personaje aparece en el globo que lo señala.</p>
   <div class="stage vn" id="sca">
     <div class="scene" id="aS" role="img" aria-label="Escena ilustrada: Activos virtuales">
       <div class="world" id="aW">
@@ -178,8 +204,9 @@ img.lay{object-fit:fill;user-select:none;pointer-events:none}
         <img class="lay fore" data-a="oficina_fore" alt="" draggable="false">
         <img class="prop" data-a="Wal" alt="" draggable="false" id="aWal" style="left:47%;top:30%;width:7%"><div class="stamp big" id="aStamp">Aviso urgente · 24 h</div>
       </div>
+      <span class="cue" id="aQ" aria-hidden="true"><i></i><i></i><i></i></span>
     </div>
-    <div class="dlg" id="aD" aria-live="polite"><span class="who"></span><div class="txt"></div></div>
+    <div class="dlgw"><div class="dlg" id="aD" aria-live="polite"><span class="av"><img alt="" draggable="false"></span><div class="db"><span class="who"></span><div class="txt"></div></div></div></div>
     <div class="beats" aria-hidden="true"><i class="beat" id="ab0"></i><i class="beat" id="ab1"></i><i class="beat" id="ab2"></i><i class="beat" id="ab3"></i></div>
   </div>
   <div class="nav"><button type="button" class="btn" id="aR">Reiniciar</button><button type="button" class="btn" id="aT">Ver todo</button></div><p class="ind" id="aI" aria-live="polite"></p>
@@ -259,7 +286,7 @@ const RC = (() => {
     return els;
   }
   function frames(p) {
-    if (p.tipo === 'trayectoria') return [{ offsetDistance: '0%' }, { offsetDistance: '100%' }];
+    if (p.tipo === 'trayectoria') { const op = `path('${p.ruta}')`; return [{ offsetPath: op, offsetDistance: '0%' }, { offsetPath: op, offsetDistance: '100%' }]; }
     if (p.tipo === 'enfasis' && p.color) return [{}, { color: p.color, borderColor: p.color, fill: p.color }];
     return (FX[p.tipo || 'entrada'] || {})[p.efecto || 'desvanecer'] || FX.entrada.desvanecer;
   }
@@ -316,12 +343,12 @@ const RC = (() => {
     const terminar = () => anims.forEach(a => { if (a.playState === 'running' || a.playState === 'paused') a.finish(); });  // no revive animaciones ya canceladas
     function preparar() {                            // estado inicial: entradas ocultas
       anims.forEach(a => a.cancel()); anims = [];
-      const pl = plan(pasos), ent = new Set();
+      const pl = plan(pasos), ent = new Set(), tray = new Set();
       pl.forEach(({ p, els }) => { if ((p.tipo || 'entrada') === 'entrada') els.forEach(e => ent.add(e)); });
       pl.forEach(({ p, els }) => {
         if ((p.tipo || 'entrada') === 'entrada') els.forEach(e => e.style.opacity = 0);
         if (p.tipo === 'salida') els.forEach(e => { if (!ent.has(e)) e.style.opacity = ''; });
-        if (p.tipo === 'trayectoria') els.forEach(e => { e.style.offsetPath = `path('${p.ruta}')`; e.style.offsetRotate = '0deg'; });
+        if (p.tipo === 'trayectoria') els.forEach(e => { if (!tray.has(e)) { tray.add(e); e.style.offsetPath = `path('${p.ruta}')`; e.style.offsetRotate = '0deg'; } });
       });
     }
     function construir(gi) {
@@ -433,36 +460,42 @@ function Actor(el){var P={},pose='neutral',t=null;el.querySelectorAll('.pz').for
  return {el:el,set:function(k){pose=k;show(k)},stop:function(){clearTimeout(t);t=null;show(pose)},
   talk:function(ms){this.stop();if(RM)return;var o=false,t0=performance.now(),self=this;(function tic(){if(performance.now()-t0>ms){self.stop();return}o=!o;show(o?(pose==='explica'?'explicaHabla':'habla'):pose);t=setTimeout(tic,o?110+Math.random()*90:80+Math.random()*120)})()}};}
 Object.keys(SC).forEach(function(sid){
- var cfg=SC[sid],S=document.getElementById(sid+'S'),W=document.getElementById(sid+'W'),D=document.getElementById(sid+'D'),who=D.querySelector('.who'),txt=D.querySelector('.txt');
+ var cfg=SC[sid],Q=document.getElementById(sid+'Q'),AV=null,S=document.getElementById(sid+'S'),W=document.getElementById(sid+'W'),D=document.getElementById(sid+'D'),who=D.querySelector('.who'),txt=D.querySelector('.txt');
  var A={};cfg.actors.forEach(function(k){A[k]=Actor(document.getElementById(sid+k));A[k].set('neutral')});
  var back=W.querySelector('.back'),chars=W.querySelector('.chars'),fore=W.querySelector('.fore'),cam=0,px=0,py=0,sal=null;
  function lay(){back.style.transform='translate('+(px*-6)+'px,'+(py*-3)+'px)';chars.style.transform='translate('+(px*4)+'px,'+(py*2)+'px)';fore.style.transform='translate('+(px*16)+'px,'+(py*6)+'px)';
   W.style.transform='translateX(-50%) translateX('+cam+'%) scale('+(cam?1.035:1)+')'}
  if(!RM){S.addEventListener('pointermove',function(e){var r=S.getBoundingClientRect();px=((e.clientX-r.left)/r.width-.5)*2;py=((e.clientY-r.top)/r.height-.5)*2;lay()});S.addEventListener('pointerleave',function(){px=py=0;lay()})}
  function salir(inst){if(!A.cli)return;if(sal)sal.cancel();sal=A.cli.el.animate([{transform:'translateX(0)',opacity:1},{transform:'translateX(-130%)',opacity:0}],{duration:RM||inst?1:1500,easing:'cubic-bezier(.5,0,.8,.6)',fill:'forwards'})}
- var cur=-1,typ=null,api=null;
- function finishTyping(){if(typ){cancelAnimationFrame(typ.raf);typ.ws.forEach(function(w){w.classList.add('v')});typ=null}}
+ var cur=-1,typ=null,api=null,curK=null;D.classList.add('vacio');AV=D.querySelector('.av img');
+ function place(){if(!curK)return;var a=A[curK].el,r=a.getBoundingClientRect(),sr=S.getBoundingClientRect(),mir=a.classList.contains('mir'),hx=r.left+r.width*(mir?.61:.39);
+  Q.style.left=(hx-sr.left)+'px';Q.style.top=Math.max(34,r.top-sr.top+r.height*.01-4)+'px';var d=D.getBoundingClientRect();D.style.setProperty('--tx',Math.max(30,Math.min(d.width-30,hx-d.left))+'px')}
+ function placeLoop(){place();setTimeout(place,250);setTimeout(place,600);setTimeout(place,1000)}
+ addEventListener('resize',place);
+ function finishTyping(){Q.classList.remove('hab');if(typ){cancelAnimationFrame(typ.raf);typ.ws.forEach(function(w){w.classList.add('v')});typ=null}}
  function say(i,instant){var l=cfg.lines[i];finishTyping();cfg.actors.forEach(function(k){A[k].stop()});
-  who.textContent=cfg.names[l.k];D.style.setProperty('--c',COL[l.k]);D.classList.toggle('piensa',!!l.piensa);
+  who.textContent=cfg.names[l.k];D.style.setProperty('--c',COL[l.k]);D.classList.toggle('piensa',!!l.piensa);D.classList.remove('vacio');
+  curK=l.k;AV.src=ASSETS[l.k+'_neutral'];Q.style.setProperty('--c',COL[l.k]);Q.classList.toggle('piensa',!!l.piensa);Q.classList.add('on');
+  cfg.actors.forEach(function(k){A[k].el.classList.toggle('quiet',k!==l.k)});
   txt.innerHTML=l.t;var ws=[];
   (function wrap(n){[].slice.call(n.childNodes).forEach(function(c){if(c.nodeType===3){var f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(function(s){if(!s)return;if(/^\s+$/.test(s))f.appendChild(document.createTextNode(s));else{var sp=document.createElement('span');sp.className='w';sp.textContent=s;f.appendChild(sp);ws.push(sp)}});n.replaceChild(f,c)}else if(c.nodeType===1&&!c.classList.contains('chips')&&!c.classList.contains('pol'))wrap(c);else if(c.nodeType===1){c.classList.add('w');ws.push(c)}})})(txt);
   cfg.actors.forEach(function(k){if(k!==l.k)A[k].set('neutral')});
   var a=A[l.k];a.set(l.p);
   var gone=cfg.lines.slice(0,i+1).some(function(x){return x.fx==='salir'});
   if(gone){if(l.fx==='salir')salir(instant);else if(!sal)salir(true)}
-  var ax=parseFloat(a.el.style.left)+12;cam=RM?0:Math.max(-4,Math.min(4,(50-ax)*.12));lay();
+  var ax=parseFloat(a.el.style.left)+12;cam=RM?0:Math.max(-4,Math.min(4,(50-ax)*.12));lay();placeLoop();
   if(instant||RM){ws.forEach(function(w){w.classList.add('v')});return}
   var dur=Math.min(5200,500+txt.textContent.length*38),t0=performance.now();typ={ws:ws,raf:0};
-  if(!l.piensa)a.talk(dur);
+  if(!l.piensa)a.talk(dur);Q.classList.add('hab');
   (function step(){if(!typ)return;var n=Math.ceil(ws.length*Math.min(1,(performance.now()-t0)/dur));for(var j=0;j<n;j++)ws[j].classList.add('v');
    if(api&&api.estado!=='corriendo'&&api.paso-1===i){finishTyping();a.stop();return}
-   if(n<ws.length)typ.raf=requestAnimationFrame(step);else typ=null})();
+   if(n<ws.length)typ.raf=requestAnimationFrame(step);else{typ=null;Q.classList.remove('hab')}})();
  }
  api=RC.secuencia('#sc'+sid,STEPS[sid],{clic:true,alCambiar:function(s){var k=s.paso-1;
    if(k>=0&&k!==cur){cur=k;say(k,s.estado!=='corriendo')}
    else if(s.estado==='terminado'&&typ&&k===cur){finishTyping();cfg.actors.forEach(function(x){A[x].stop()})}}});
  RC.controlesClic(api,{reiniciar:'#'+sid+'R',verTodo:'#'+sid+'T',indicador:'#'+sid+'I'});
- document.getElementById(sid+'R').addEventListener('click',function(){cur=-1;finishTyping();who.textContent='';txt.innerHTML='';cam=0;lay();if(sal){sal.cancel();sal=null}cfg.actors.forEach(function(k){A[k].set('neutral')})});
+ document.getElementById(sid+'R').addEventListener('click',function(){cur=-1;finishTyping();who.textContent='';txt.innerHTML='';cam=0;lay();if(sal){sal.cancel();sal=null}curK=null;D.classList.add('vacio');Q.classList.remove('on');cfg.actors.forEach(function(k){A[k].el.classList.remove('quiet')});cfg.actors.forEach(function(k){A[k].set('neutral')})});
  document.getElementById(sid+'T').addEventListener('click',function(){cur=cfg.lines.length-1;say(cur,true);cam=0;lay()});
 });
 var p=RC.secuencia('#scp',[{"el": "#pRec", "tipo": "entrada", "efecto": "izquierda", "suavizado": "rebote", "dur": 650}, {"el": ".bp", "tipo": "entrada", "efecto": "izquierda", "por": "elemento", "escalonado": 120, "dur": 450, "inicio": "con"}, {"el": "#ck0", "tipo": "entrada", "efecto": "zoom", "suavizado": "rebote", "dur": 500, "inicio": "clic"}, {"el": "#pRec", "tipo": "enfasis", "efecto": "pulso", "dur": 350, "inicio": "con"}, {"el": "#ck1", "tipo": "entrada", "efecto": "zoom", "suavizado": "rebote", "dur": 500, "inicio": "clic"}, {"el": "#pRec", "tipo": "enfasis", "efecto": "pulso", "dur": 350, "inicio": "con"}, {"el": "#ck2", "tipo": "entrada", "efecto": "zoom", "suavizado": "rebote", "dur": 500, "inicio": "clic"}, {"el": "#pRec", "tipo": "enfasis", "efecto": "pulso", "dur": 350, "inicio": "con"}, {"el": "#ck3", "tipo": "entrada", "efecto": "zoom", "suavizado": "rebote", "dur": 500, "inicio": "clic"}, {"el": "#pRec", "tipo": "enfasis", "efecto": "pulso", "dur": 350, "inicio": "con"}, {"el": "#rk0", "tipo": "entrada", "efecto": "izquierda", "dur": 400, "inicio": "con"}, {"el": ".rs i", "tipo": "entrada", "efecto": "zoom", "suavizado": "rebote", "por": "elemento", "escalonado": 90, "dur": 350}, {"el": "#rk1", "tipo": "entrada", "efecto": "izquierda", "dur": 400, "inicio": "con"}, {"el": "#rk2", "tipo": "entrada", "efecto": "izquierda", "dur": 400, "inicio": "con"}, {"el": "#rk2", "tipo": "enfasis", "efecto": "pulso", "dur": 400}],{clic:true});RC.controlesClic(p,{reiniciar:'#pR',verTodo:'#pT',indicador:'#pI'});
